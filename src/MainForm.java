@@ -79,19 +79,6 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
         setResizable(false);
 
 
-      /*  JPanel buttonPanel = new JPanel(new GridBagLayout());
-
-        c.gridwidth = 3;
-        c.ipadx = 60;
-        buttonPanel.add(buttonPlay,c);
-
-        c.ipadx = 60;
-        buttonPanel.add(buttonPause,c);
-        c.ipadx = 60;
-        buttonPanel.add(buttonOpen,c);
-
-        c.insets = new Insets(220,0,0,0);
-        buttonPanel.setOpaque(false);*/
 
         sliderTime.setOpaque(false);
         sliderTime.setPreferredSize(new Dimension(400, 20));
@@ -117,7 +104,29 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
         //c.insets = new Insets(220,0,0,0);
 
        // panel.add(buttonPanel,c);
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,50,5));
+        buttonPlay.setPreferredSize(new Dimension(100,30));
+        buttonPause.setPreferredSize(new Dimension(100,30));
+        buttonOpen.setPreferredSize(new Dimension(100,30));
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER,5,5));
+        buttonPanel.add(buttonPause);
+        buttonPanel.add(buttonPlay);
+        buttonPanel.add(buttonOpen);
+        buttonPanel.setOpaque(false);
+
+              /*  JPanel buttonPanel = new JPanel(new GridBagLayout());
+
+        c.gridwidth = 3;
+        c.ipadx = 60;
+        buttonPanel.add(buttonPlay,c);
+
+        c.ipadx = 60;
+        buttonPanel.add(buttonPause,c);
+        c.ipadx = 60;
+        buttonPanel.add(buttonOpen,c);
+
+        c.insets = new Insets(220,0,0,0);
+        buttonPanel.setOpaque(false);*/
+
 
         c.gridwidth = 3;
         c.gridx = 0;
@@ -146,14 +155,16 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
 
         JScrollPane text = new JScrollPane(textArea);
         text.setBounds(10, 143, 652, 185);
-        imagePanel.add(text);
+      //  imagePanel.add(text);
 
         JLabel lblNewLabel = new JLabel("Information:");
-        lblNewLabel.setFont(new Font("Verdana", Font.ITALIC, 29));
+        lblNewLabel.setForeground(new Color(254,253,25));
+        lblNewLabel.setFont(new Font("Verdana", Font.BOLD, 29));
         lblNewLabel.setBounds(10, 82, 211, 64);
         imagePanel.add(lblNewLabel);
 
         JLabel Media = new JLabel("MediaPlayer");
+        Media.setForeground(new Color(250,251,2));
         Media.setFont(new Font("Verdana", Font.ITALIC, 48));
         Media.setBounds(200, 15, 300, 64);
         imagePanel.add(Media);
