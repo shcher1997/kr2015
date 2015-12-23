@@ -8,7 +8,6 @@ public class ImagePanel extends JPanel {
     public ImagePanel(String path){
         this(new ImageIcon(path).getImage());
         this.line = line;
-
     }
 
     public ImagePanel(Image img){
@@ -22,8 +21,10 @@ public class ImagePanel extends JPanel {
     }
 
     public void paintComponent(Graphics g){
-        g.drawImage(img,0,0,null);
-        g.drawImage(img,10,0,490,300, null);
-      //  g.drawImage(new ImageIcon(line).getImage(),120,50,null);
+
+         g.drawImage(img,0,0,700,500, null);
+      ///  this.paintChildren(g);       ???????????????
+        g.drawImage(new ImageIcon(line).getImage(),700,500,null);
+     //   repaint();
     }
 }
