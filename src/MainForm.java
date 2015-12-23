@@ -42,7 +42,9 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
 
     private JTextPane textArea;
 
+   //private PlayingTime timer;
 
+    private Thread playbackThread;
 
     JPanel contentPane;
     ImagePanel imagePanel;
@@ -53,6 +55,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
 
     private boolean isPause;
     private boolean isPlaying;
+    private PlayingTimer timer;
 
     public MainForm(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -120,6 +123,10 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
         buttonPanel.add(buttonOpen);
         buttonPanel.setOpaque(false);
 
+        buttonOpen.addActionListener(this);
+        buttonPlay.addActionListener(this);
+        buttonPause.addActionListener(this);
+
         c.gridwidth = 3;
         c.gridx = 0;
         c.gridy = 2;
@@ -166,6 +173,8 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
 
         playerPanel.setBounds(10,338,654,101);
         imagePanel.add(playerPanel);
+
+        Actions();
 
         setVisible(true);
     }
@@ -338,7 +347,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
                     resetControls();
 
                 } catch (UnsupportedAudioFileException ex) {
-                    JOptionPane.showMessageDialog(Frame.this,
+                    JOptionPane.showMessageDialog(MainForm.this,
                             "The audio format is unsupported!", "Error", JOptionPane.ERROR_MESSAGE);
                     resetControls();
                     ex.printStackTrace();
