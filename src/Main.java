@@ -14,7 +14,7 @@ public class Main extends JFrame {
     public Player player;
     public long pauseLocation;
     public long songTotalLength;
-    public  String fileLocation;
+    public  String fileLocation = "D:\\ФКН КС-12\\oop\\kr2015\\sounds\\astronaut.mp3";
 
     public void stop(){
         if (player!=null){
@@ -81,7 +81,20 @@ public class Main extends JFrame {
     }
 
 
-    public static void main (String[] args) {
-        new MainForm();
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        SwingUtilities.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+               // new MainForm();
+                new MainForm();
+            }
+        });
+
     }
 }
