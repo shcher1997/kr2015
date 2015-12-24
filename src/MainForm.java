@@ -22,6 +22,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
     private AudioPlayer player1 = new AudioPlayer();
 
     private JPanel playerPanel;
+  //  private JPanel logoPanel;
 
     private JButton buttonOpen ;
     private JButton buttonPlay;
@@ -56,6 +57,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
     private boolean isPause;
     private boolean isPlaying;
     private PlayingTimer timer;
+    Main mn;
 
     public MainForm(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,7 +94,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
         c.gridy = 0;
         c.gridwidth = 2;
         labelFileName = new JLabel("Playing Time");
-        labelFileName.setFont(new Font("Arial",Font.BOLD,20));
+        labelFileName.setFont(new Font("Arial",Font.BOLD,16));
         labelFileName.setForeground(new Color(254,52,180));
         playerPanel.add(labelFileName,c);
 
@@ -167,12 +169,38 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
 
         JLabel Media = new JLabel("MediaPlayer");
         Media.setForeground(new Color(250,251,2));
-        Media.setFont(new Font("Verdana", Font.ITALIC, 48));
+        Media.setFont(new Font("Verdana", Font.BOLD, 42));
         Media.setBounds(200, 15, 300, 64);
         imagePanel.add(Media);
 
         playerPanel.setBounds(10,338,654,101);
         imagePanel.add(playerPanel);
+
+        JPanel panel1 = new JPanel();
+
+        ImageIcon pic = new ImageIcon("BRUTTO.jpg");
+        panel1.add(new JLabel(pic));
+
+        panel1.setBounds(430,150,200,200);
+
+        imagePanel.add(panel1);
+
+
+        //repaint();
+        revalidate();
+
+
+
+
+       // LogoPanel logoPanel = new LogoPanel("BRUTTO.jpg");
+       // logoPanel.setBounds(430,150,200,200);
+
+       // logoPanel.revalidate();
+        //repaint();
+       // imagePanel.add(logoPanel);
+       // logoPanel.setLayout(null);
+
+
 
         Actions();
 
@@ -206,7 +234,18 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
                             filename = String.valueOf(song.getSelectedItem());
                             System.out.println(filename);
                         }
+                    /*    int i = 0;
+                        while(i<items.length){
+                            if(filename == song.getItemAt(i)){
+                            //    imagePanel = new ImagePanel(itemsImage[i]);
+                               // logoPanel = new ImagePanel(itemsImage[i]);
+                               // logoPanel = new LogoPanel(itemsImage[i]);
+                                //imagePanel.repaint();
+                            }
+                            i++;
+                        }*/
                     }
+
                 });
 
     }
@@ -223,16 +262,16 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
                 if (isPlaying) {
                     stopPlaying();
                 }
-                String name ="files\\"+String.valueOf(song.getSelectedItem())+".txt";
-                System.out.println(name);
-                File file = new File(name);
-                try {
+            //    String name ="files\\"+String.valueOf(song.getSelectedItem())+".txt";
+              //  System.out.println(name);
+               // File file = new File(name);
+            /*    try {
                     Scanner scan = new Scanner(new FileReader(file));
                     while (scan.hasNext())
                         textArea.setText(textArea.getText() + scan.nextLine() + "\n");
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
-                }
+                }*/
                 System.out.println();
                 try {
                     openFile();
