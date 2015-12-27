@@ -12,9 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Scanner;
 
 public class MainForm extends JFrame implements ActionListener, PLayList {
@@ -52,6 +50,8 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
     private PlayingTimer timer;
 
     private JList playlist;
+
+    private DefaultListModel listModel;
 
     public MainForm(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -180,11 +180,15 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
         label.setBounds(190,150,300,200);
       //  imagePanel.add(label);
 
-        playlist = new JList();
+        listModel = new DefaultListModel();
+
+        playlist = new JList(listModel);
 
         JScrollPane scroolList = new JScrollPane(playlist);
         scroolList.setBounds(10, 143, 673, 204);
         imagePanel.add(scroolList);
+
+        loadList();
 
         Actions();
 
@@ -405,6 +409,34 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
         buttonPause.setEnabled(false);
 
         isPlaying = false;
+    }
+
+    Scanner sc;
+
+    File file = new File("Playlist.txt");
+//    PrintWriter pw = new PrintWriter(file);
+
+    private void loadList (){
+
+        try {
+           // sc = new Scanner(new FileReader("Playlist.txt"));
+            BufferedReader br = new BufferedReader(new FileReader("Playlist.txt"));
+            String str;
+            while ((str = br.readLine())!=null)
+                //s +=str+"\n" ;
+              //playlist.add(str);
+            listModel.addElement(str);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public void editPlaylist(){
+
     }
 }
 
