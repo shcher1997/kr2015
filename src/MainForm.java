@@ -22,7 +22,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
     private AudioPlayer player1 = new AudioPlayer();
 
     private JPanel playerPanel;
-  //  private JPanel logoPanel;
+    private JPanel logoPanel;
 
     private JButton buttonOpen ;
     private JButton buttonPlay;
@@ -43,21 +43,15 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
 
     private JTextPane textArea;
 
-   //private PlayingTime timer;
-
     private Thread playbackThread;
 
-    JPanel contentPane;
     ImagePanel imagePanel;
-    Main main;
-
-    JLayeredPane layeredPane;
-    JPanel background;
 
     private boolean isPause;
     private boolean isPlaying;
     private PlayingTimer timer;
-    Main mn;
+
+    private JList playlist;
 
     public MainForm(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,9 +62,6 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
         playerPanel = new JPanel();
         playerPanel.setLayout(new GridBagLayout());
         playerPanel.setOpaque(false);
-
-        GridBagLayout gridBagLayout = new GridBagLayout();
-        //setLayout(gridBagLayout);
 
         GridBagConstraints c = new GridBagConstraints();
         c.anchor = GridBagConstraints.WEST;
@@ -142,7 +133,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
         setResizable(false);
         contentPane.setLayout(null);
 
-        ImagePanel imagePanel = new ImagePanel("D:\\ФКН КС-12\\oop\\kr2015\\panel\\music.jpg");
+        imagePanel = new ImagePanel("D:\\ФКН КС-12\\oop\\kr2015\\panel\\music.jpg");
         imagePanel.setBounds(0,0,700,500);
 
         contentPane.add(imagePanel);
@@ -151,7 +142,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
         song = new JComboBox(items);
         filename = String.valueOf(song.getItemAt(0));
         song.setBounds(231,112,250,20);
-        open.setBounds(500,112,60,20);
+        open.setBounds(485,112,100,20);
         imagePanel.add(open);
         imagePanel.add(song);
 
@@ -176,42 +167,29 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
         playerPanel.setBounds(10,338,654,101);
         imagePanel.add(playerPanel);
 
-        JPanel panel1 = new JPanel();
+      //  logoPanel = new LogoPanel(itemsImage[2]);
 
-        ImageIcon pic = new ImageIcon("BRUTTO.jpg");
-        panel1.add(new JLabel(pic));
+       // logoPanel.setPreferredSize(new Dimension(400,200));
+     //   logoPanel.setBounds(190,150,300,200);
+      //  imagePanel.add(logoPanel);
+       // repaint();
 
-        panel1.setBounds(430,150,200,200);
+        ImageIcon icon = new ImageIcon(itemsImage[2]);
+        JLabel label = new JLabel(icon);
 
-        imagePanel.add(panel1);
+        label.setBounds(190,150,300,200);
+      //  imagePanel.add(label);
 
+        playlist = new JList();
 
-        //repaint();
-        revalidate();
-
-
-
-
-       // LogoPanel logoPanel = new LogoPanel("BRUTTO.jpg");
-       // logoPanel.setBounds(430,150,200,200);
-
-       // logoPanel.revalidate();
-        //repaint();
-       // imagePanel.add(logoPanel);
-       // logoPanel.setLayout(null);
-
-
+        JScrollPane scroolList = new JScrollPane(playlist);
+        scroolList.setBounds(10, 143, 673, 204);
+        imagePanel.add(scroolList);
 
         Actions();
 
         setVisible(true);
     }
-
-
-    //@Override
-//  public void actionPerformed(ActionEvent e) {
-
-   // }
 
     public void Actions() {
         open.addActionListener(new ActionListener() {
@@ -234,16 +212,16 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
                             filename = String.valueOf(song.getSelectedItem());
                             System.out.println(filename);
                         }
-                    /*    int i = 0;
+                        int i = 0;
                         while(i<items.length){
                             if(filename == song.getItemAt(i)){
-                            //    imagePanel = new ImagePanel(itemsImage[i]);
-                               // logoPanel = new ImagePanel(itemsImage[i]);
-                               // logoPanel = new LogoPanel(itemsImage[i]);
-                                //imagePanel.repaint();
+                                logoPanel = new LogoPanel(itemsImage[i]);
+
+                                repaint();
+
                             }
                             i++;
-                        }*/
+                        }
                     }
 
                 });
@@ -262,16 +240,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
                 if (isPlaying) {
                     stopPlaying();
                 }
-            //    String name ="files\\"+String.valueOf(song.getSelectedItem())+".txt";
-              //  System.out.println(name);
-               // File file = new File(name);
-            /*    try {
-                    Scanner scan = new Scanner(new FileReader(file));
-                    while (scan.hasNext())
-                        textArea.setText(textArea.getText() + scan.nextLine() + "\n");
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
-                }*/
+
                 System.out.println();
                 try {
                     openFile();
@@ -431,7 +400,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
     }
     private void resetControls() {
         timer.reset();
-        timer.interrupt();
+       // timer.interrupt();
         buttonPlay.setText("Play");
         buttonPause.setEnabled(false);
 
