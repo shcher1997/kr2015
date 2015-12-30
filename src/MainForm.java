@@ -1,11 +1,11 @@
-import com.sun.deploy.config.JCPConfig;
-import com.sun.deploy.panel.GeneralPanel;
-import javazoom.jl.player.Player;
 
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -13,10 +13,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.*;
-import java.util.Scanner;
+
 
 public class MainForm extends JFrame implements ActionListener, PLayList {
-    private Player player;
     private AudioPlayer player1 = new AudioPlayer();
 
     private JPanel playerPanel;
@@ -25,7 +24,9 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
     private JButton buttonOpen ;
     private JButton buttonPlay;
     private JButton buttonPause;
-    private JButton open = new JButton("Open");
+    private JButton open = new JButton("New");
+    private JButton buttonAdd;
+    private JButton buttonRemove;
 
     private JLabel labelTimeCounter;
     private JLabel labelDuration;
@@ -47,13 +48,16 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
 
     private boolean isPause;
     private boolean isPlaying;
+
     private PlayingTimer timer;
 
     private JList playlist;
 
     private DefaultListModel listModel;
 
-    public MainForm(){
+    final String pathPL = "Playlist.txt";
+
+    public MainForm() throws FileNotFoundException {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(600,400);
 
@@ -85,7 +89,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
         c.gridy = 0;
         c.gridwidth = 2;
         labelFileName = new JLabel("Playing Time");
-        labelFileName.setFont(new Font("Arial",Font.BOLD,16));
+        labelFileName.setFont(new Font("Arial",Font.BOLD,13));
         labelFileName.setForeground(new Color(254,52,180));
         playerPanel.add(labelFileName,c);
 
@@ -139,12 +143,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
         contentPane.add(imagePanel);
         imagePanel.setLayout(null);
 
-        song = new JComboBox(items);
-        filename = String.valueOf(song.getItemAt(0));
-        song.setBounds(231,112,250,20);
-        open.setBounds(485,112,100,20);
-        imagePanel.add(open);
-        imagePanel.add(song);
+
 
         textArea = new JTextPane();
 
@@ -167,28 +166,33 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
         playerPanel.setBounds(10,338,654,101);
         imagePanel.add(playerPanel);
 
-      //  logoPanel = new LogoPanel(itemsImage[2]);
-
-       // logoPanel.setPreferredSize(new Dimension(400,200));
-     //   logoPanel.setBounds(190,150,300,200);
-      //  imagePanel.add(logoPanel);
-       // repaint();
-
-        ImageIcon icon = new ImageIcon(itemsImage[2]);
-        JLabel label = new JLabel(icon);
-
-        label.setBounds(190,150,300,200);
-      //  imagePanel.add(label);
-
         listModel = new DefaultListModel();
 
         playlist = new JList(listModel);
 
-        JScrollPane scroolList = new JScrollPane(playlist);
-        scroolList.setBounds(10, 143, 673, 204);
-        imagePanel.add(scroolList);
+        playlist.setFont(new Font("Verdana",Font.BOLD,14));
+        playlist.setBackground(new Color(240,255,2));
 
-        loadList();
+        song = new JComboBox(items);
+        filename = String.valueOf(song.getItemAt(0));
+        song.setBounds(231,112,250,20);
+        open.setBounds(485,112,100,20);
+        imagePanel.add(open);
+        imagePanel.add(song);
+
+        JScrollPane scroolList = new JScrollPane(playlist);
+        scroolList.setBounds(10, 143, 600, 204);
+      //  imagePanel.add(scroolList);
+
+        buttonAdd = new JButton("Add");
+        buttonAdd.setBounds(612,205,80,40);
+      //  imagePanel.add(buttonAdd);
+
+
+        buttonRemove = new JButton("Remove");
+        buttonRemove.setBounds(612,250,80,40);
+      //  imagePanel.add(buttonRemove);
+
 
         Actions();
 
@@ -209,6 +213,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
                 openF();
             }
         });
+
         song.addItemListener(
                 new ItemListener() {
                     public void itemStateChanged(ItemEvent ev) {
@@ -234,7 +239,7 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
     @Override
     public void actionPerformed(ActionEvent event) {
         Object source = event.getSource();
-        if (source instanceof JButton) {
+       if (source instanceof JButton) {
             JButton button = (JButton) source;
             if (button == buttonOpen) {
                 textArea.setText("");
@@ -269,9 +274,10 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
                 }
             }
         }
+
     }
 
-    private void openF(){
+    private String openF(){
         JFileChooser fileChooser;
 
         if (lastOpenPath != null && !lastOpenPath.equals("")) {
@@ -287,37 +293,38 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
             }
 
             @Override
-            public boolean accept(File file) {
-                return file.isDirectory() || file.getName().toLowerCase().endsWith(".wav");
-            }
-        };
+    public boolean accept(File file) {
+        return file.isDirectory() || file.getName().toLowerCase().endsWith(".wav");
+    }
+};
 
 
-        fileChooser.setFileFilter(wavFilter);
+fileChooser.setFileFilter(wavFilter);
         fileChooser.setDialogTitle("Open Audio File");
         fileChooser.setAcceptAllFileFilterUsed(false);
 
         int userChoice = fileChooser.showOpenDialog(this);
         if (userChoice == JFileChooser.APPROVE_OPTION) {
-            audioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
-            lastOpenPath = fileChooser.getSelectedFile().getParent();
-            if (isPlaying || isPause) {
-                stopPlaying();
-                while (player1.getAudioClip().isRunning()) {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-            try {
-                playBack();
-            } catch (AWTException e1) {
-                e1.printStackTrace();
-            }
+        audioFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+        lastOpenPath = fileChooser.getSelectedFile().getParent();
+        if (isPlaying || isPause) {
+        stopPlaying();
+        while (player1.getAudioClip().isRunning()) {
+        try {
+        Thread.sleep(100);
+        } catch (InterruptedException ex) {
+        ex.printStackTrace();
         }
-    }
+        }
+        }
+        try {
+        playBack();
+        } catch (AWTException e1) {
+        e1.printStackTrace();
+        }
+        }
+        return audioFilePath;
+        }
     private void openFile() throws AWTException {
         audioFilePath = "sounds\\"+filename;
         if (isPlaying || isPause) {
@@ -404,40 +411,30 @@ public class MainForm extends JFrame implements ActionListener, PLayList {
     }
     private void resetControls() {
         timer.reset();
-       // timer.interrupt();
         buttonPlay.setText("Play");
         buttonPause.setEnabled(false);
-
         isPlaying = false;
     }
 
-    Scanner sc;
-
-    File file = new File("Playlist.txt");
-//    PrintWriter pw = new PrintWriter(file);
-
     private void loadList (){
-
+        String s = "";
         try {
-           // sc = new Scanner(new FileReader("Playlist.txt"));
-            BufferedReader br = new BufferedReader(new FileReader("Playlist.txt"));
             String str;
-            while ((str = br.readLine())!=null)
-                //s +=str+"\n" ;
-              //playlist.add(str);
-            listModel.addElement(str);
+            RandomAccessFile file = new RandomAccessFile(pathPL,"rw");
+            while ((str = file.readLine())!=null) {
+                s += str + "\n";
+                listModel.addElement(s + "\n");
+                s = "";
+            }
+            file.close();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
-    public void editPlaylist(){
-
-    }
 }
 
 
