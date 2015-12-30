@@ -21,10 +21,11 @@ public class ImagePanel extends JPanel {
     }
 
     public void paintComponent(Graphics g){
+        super.paintComponent(g);
 
          g.drawImage(img,0,0,700,500, null);
       ///  this.paintChildren(g);       ???????????????
-        g.drawImage(new ImageIcon(line).getImage(),700,500,null);
+        g.drawImage(new ImageIcon(img).getImage(),700,500,null);
      //   repaint();
     }
 }
